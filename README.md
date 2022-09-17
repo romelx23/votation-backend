@@ -2,6 +2,8 @@
 
 Esta es una aplicación de votaciones en tiempo real, desarrollada con React, Node.js, Express y Socket.io.
 
+![alt](https://media.discordapp.net/attachments/839620709517230081/1020753481394569316/unknown.png?width=720&height=364)
+
 ## Instalación
 
 Para instalar las dependencias del servidor y del cliente, ejecutar el siguiente comando:
