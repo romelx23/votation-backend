@@ -11,13 +11,13 @@ const VotationSchema = new Schema({
   },
   image: {
     type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
+    required: false,
   },
   color: {
+    type: String,
+    required: true,
+  },
+  type_form: {
     type: String,
     required: true,
   },
@@ -29,6 +29,18 @@ const VotationSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  expiration: {
+    type: Date,
+    required: true,
+  },
+  user:{
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+  },
+},{
+  timestamps: true,
+  versionKey: false,
 });
 
 VotationSchema.methods.toJSON = function () {

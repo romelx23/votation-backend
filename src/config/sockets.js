@@ -21,7 +21,7 @@ class Sockets {
       socket.on("create-votation", async (payload) => {
         // const votation = await createVotation(payload);
         try {
-          console.log("create-votation");
+          console.log("create-votation",payload);
           await createVotation(payload);
           this.io.emit("get-votations", await getVotations());
         } catch (error) {

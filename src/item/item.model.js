@@ -18,6 +18,10 @@ const ItemsSchema = new Schema({
     ref: "Votation",
     required: true,
   },
+  mal_id: {
+    type: Number,
+    required: false,
+  },
 });
 
 ItemsSchema.methods.toJSON = function () {

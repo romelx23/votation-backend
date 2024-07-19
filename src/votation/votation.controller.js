@@ -13,11 +13,39 @@ const getVotation = async (req, res) => {
 };
 
 const getVotations = async (req, res) => {
-  const votations = await Votation.find();
-  res.status(200).json({
-    total: votations.length,
-    votations,
-  });
+
+  try {
+    
+    const { limit = 5, offset = 0, search = "" } = req.query;
+  
+    const query = {
+      status: true,
+    };
+  
+    if (search && search !== "null" && search !== "undefined") {
+      console.log(search);
+      query.title = { $regex: search, $options: "i" };
+    }
+  
+     const [total, votations] = await Promise.all([
+        Votation.countDocuments(query),
+        Votation.find(query)
+          .skip(Number(offset))
+          .limit(Number(limit))
+          .sort({ createdAt: -1 })
+      ]);
+  
+      return res.status(200).json({
+        total,
+        votations
+      });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "Hable con el administrador"
+    });
+  }
 };
 
 const createVotation = async (req, res) => {

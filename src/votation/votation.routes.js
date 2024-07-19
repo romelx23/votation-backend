@@ -6,10 +6,13 @@ const {
   getVotation,
   createVotation,
 } = require("./votation.controller");
+const { insertVotes } = require("../seed/votationSeed");
 
 const router = Router();
 
 router.get("/", [validarCampos], getVotations);
+
+router.get("/seed", [], insertVotes);
 
 router.get(
   "/:id",

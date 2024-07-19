@@ -1,3 +1,4 @@
+const votationSchema = require("../dto/votationDto");
 const Item = require("../item/item.model");
 const Votation = require("../votation/votation.model");
 
@@ -22,11 +23,29 @@ const getVotation = async (payload) => {
 
 const createVotation = async (payload) => {
   const { items, ...rest } = payload;
-
+  // console.log(items, ...rest);
+  console.log(payload);
   if (!items) return { msg: "No hay items" };
   if (!items.length < 0) return { msg: "No hay elementos en el arreglo" };
 
   try {
+    const {
+      error,
+      // value: { items, ...rest },
+    } = votationSchema.validate(rest);
+
+    if (error) {
+      // return {
+      //   msg: "Error en la validación de la votación",
+      //   error,
+      // };
+        throw new Error(`Validation error: ${error.details.map(x => x.message).join(", ")}`);
+    }
+
+    if (rest.image==="") {
+      rest.image = items[0].image;
+    }
+
     const votation = new Votation(rest);
     const votationSaved = await votation.save();
     const votationId = votationSaved._id;
@@ -44,6 +63,7 @@ const createVotation = async (payload) => {
       items: itemsSaved,
     };
   } catch (error) {
+    console.log(error);
     return {
       msg: "Error al guardar la votación",
     };
