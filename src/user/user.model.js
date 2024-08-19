@@ -1,47 +1,54 @@
+// {
+//     nombre:'romel',
+//     correo:'dasda@SpeechGrammarList.com',
+//     password:'32423432',
+//     img:'adasdas',
+//     rol:'12321',
+//     estado:false,
+//     google:false,
+// }
 const { Schema, model } = require("mongoose");
 
-const UsuarioSchema = new Schema({
-  nombre: {
+const UserSchema = Schema({
+  name: {
     type: String,
-    required: [true, "El nombre es obligatorio"],
-    unique:true,
+    required: [true, "El nombre es obligatorio"]
   },
-  correo: {
+  email: {
     type: String,
     required: [true, "El correo es obligatorio"],
-    unique:true,
+    unique: true
   },
   password: {
     type: String,
-    required: [true, "La contraseña es obligatoria"],
+    required: [true, "La contraseña es obligatorio"]
   },
-  imagen:{
+  img: {
+    type: String
+  },
+  role: {
     type: String,
-    default: "https://media.discordapp.net/attachments/789940470578544682/1006755574526005268/3.png",
+    // required: true,
+    default: "USER_ROLE",
+    // enum: ['ADMIN_ROLE', 'USER_ROLE', 'MONITOR_ROLE', 'TEACHER_ROLE', 'STUDENT_ROLE']
+    enum: ["ADMIN_ROLE", "USER_ROLE", "MONITOR_ROLE"]
   },
-  estado: {
+  status: {
     type: Boolean,
-    default: true,
-    required: true,
-  },
-  online:{
-    type: Boolean,
-    default: false,
-    required: true,
+    default: true
   },
   google: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 // Modificamos el json que nos devuelve mongoose
-UsuarioSchema.methods.toJSON = function () {
-  const { __v, password, _id, ...usuario } = this.toObject(); //eslint-disable-line
-  usuario.uid = _id;
-  return usuario;
+UserSchema.methods.toJSON = function () {
+  const { __v, password, _id, ...user } = this.toObject(); //eslint-disable-line
+  user.uid = _id;
+  return user;
 };
 
-const Usuario = model("Usuario", UsuarioSchema);
-module.exports = Usuario;
-
+const User = model("User", UserSchema);
+module.exports = User;

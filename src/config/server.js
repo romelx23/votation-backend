@@ -17,6 +17,8 @@ class Server {
     });
     // Rutas de mi aplicacion
     this.paths = {
+      auth: "/api/auth",
+      user: "/api/user",
       votation: "/api/votation",
       items: "/api/items",
     };
@@ -68,6 +70,8 @@ class Server {
   }
 
   routes() {
+    this.app.use(this.paths.auth, require("../auth/auth.routes"));    
+    this.app.use(this.paths.user, require("../user/user.routes"));
     this.app.use(this.paths.votation, require("../votation/votation.routes"));
     this.app.use(this.paths.items, require("../item/item.routes"));
   }

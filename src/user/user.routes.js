@@ -2,68 +2,76 @@ const { Router } = require("express");
 const { body, check } = require("express-validator");
 
 const {
-  usuariosGet,
-  usuariosPut,
-  usuariosPost,
-  usuariosDelete,
-  usuariosPatch,
-  usuariosGetId,
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser
 } = require("./user.controller");
 const {
+  // esRoleValido,
   emailExiste,
   existeUsuarioPorId,
+  esRoleValidoLocal
 } = require("../helpers/db-validators");
+// const { validarCampos } = require("../middlewares/validar-campos");
+// const { validarJWT } = require("../middlewares/validar-jwt");
+// const { tieneRole } = require("../middlewares/validar-roles");
 
-const { validarJWT, tieneRole, validarCampos } = require("../middlewares");
+const { validarJWT, tieneRole, validarCampos, esAdminRole } = require("../middlewares");
 
 const router = Router();
 
-router.get("/",validarJWT,usuariosGet);
-
-router.get("/:id",
-[
-  check("id", "No es un mongo ID").isMongoId(),
+router.get("/", [
   validarJWT,
-  validarCampos,
-],usuariosGetId);
+  esAdminRole,
+  validarCampos
+],
+getUsers);
 
-router.put(
-  "/:id",
-  [
-    check("id", "No es un mongo ID").isMongoId(),
-    check("id").custom(existeUsuarioPorId),
-    validarCampos,
-  ],
-  usuariosPut
-);
+router.get("/:id", getUser);
 
 router.post(
   "/",
   [
-    body("nombre", "El nombre es obligatorio").not().isEmpty(),
+    body("name", "El nombre es obligatorio").not().isEmpty(),
+    body("email", "El correo no es valido").isEmail().custom(emailExiste),
     body("password", "El password debe de ser más de 6 letras").isLength({
-      min: 6,
+      min: 6
     }),
-    body("correo", "El correo no es valido").isEmail().custom(emailExiste),
-    // body("rol","No es un rol valido").isIn(["ADMIN_ROLE", "USER_ROLE"]),
-    validarCampos,
+    // body('rol', 'No es un rol valido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+    validarCampos
   ],
-  usuariosPost
+  createUser
+);
+
+router.put(
+  "/:id",
+  [
+    validarJWT,
+    esAdminRole,
+    check("id", "No es un mongo ID").isMongoId(),
+    check("id").custom(existeUsuarioPorId),
+    // check('role').custom(esRoleValido),
+    check("role").custom(esRoleValidoLocal),
+    validarCampos
+  ],
+  updateUser
 );
 
 router.delete(
   "/:id",
   [
     validarJWT,
-    // esAdminRole,
-    tieneRole("ADMIN_ROLE", "VENTAS_ROLE"),
+    esAdminRole,
+    tieneRole("ADMIN_ROLE"),
     check("id", "No es un mongo ID").isMongoId(),
     check("id").custom(existeUsuarioPorId),
-    validarCampos,
+    validarCampos
   ],
-  usuariosDelete
+  deleteUser
 );
 
-router.patch("/", usuariosPatch);
+// router.patch('/', patchUser)
 
 module.exports = router;

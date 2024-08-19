@@ -33,6 +33,10 @@ const VotationSchema = new Schema({
     type: Date,
     required: true,
   },
+  visibility: {
+    type: Boolean,
+    default: true,
+  },
   user:{
     type: Schema.Types.ObjectId,
     ref: "User",

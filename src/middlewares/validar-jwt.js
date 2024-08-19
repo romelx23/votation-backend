@@ -1,9 +1,10 @@
 const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
-const Usuario = require("../user/user.model");
+const User = require("../user/user.model");
 
 const validarJWT = async (req = request, res = response, next) => {
   const token = req.header("x-token");
+  // console.log(token);
 
   if (!token) {
     return res.status(401).json({
@@ -16,23 +17,24 @@ const validarJWT = async (req = request, res = response, next) => {
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
     // leer el usuario que corresponde al uid
-    const usuario = await Usuario.findById(uid);
+    const user = await User.findById(uid);
+    // console.log(user);
 
-    if(!usuario){
+    if(!user){
       return res.status(401).json({
         msg: "Token no valido - usuario no existe en BD",
       });
     }
 
     // Vertificar sui el uid tiene estado true
-    if (!usuario.estado) {
+    if (!user.status) {
       // no tengo permisos status 401
       return res.status(401).json({
         msg: "Token no valido - usuario con estado:false",
       });
     }
     // req.uid=uid;
-    req.usuario = usuario;
+    req.user = user;
     next();
   } catch (error) {
     console.log(error);
