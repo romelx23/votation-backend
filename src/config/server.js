@@ -21,6 +21,7 @@ class Server {
       user: "/api/user",
       votation: "/api/votation",
       items: "/api/items",
+      shared: "/api/shared",
     };
     // this.usuariosPath = "/api/usuarios";
     // this.authPath = "/api/auth";
@@ -74,6 +75,7 @@ class Server {
     this.app.use(this.paths.user, require("../user/user.routes"));
     this.app.use(this.paths.votation, require("../votation/votation.routes"));
     this.app.use(this.paths.items, require("../item/item.routes"));
+    this.app.use(this.paths.shared, require("../shared-votation/shared-votation.routes"));
   }
 
   listen() {
